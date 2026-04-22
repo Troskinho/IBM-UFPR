@@ -282,7 +282,7 @@ int gbv_list(const Library *lib) {
         return 0;
     }
 
-    printf("%-30% %10  %-20s  %s\n", "Nome", "Tamanho", "Data de Inserção", "Offset");
+    printf("%-30% %10s  %-20s  %s\n", "Nome", "Tamanho", "Data de Inserção", "Offset");
     printf("%-30s %10s  %-20s  %s\n", 
               "------------------------------", "----------",
               "--------------------", "------");
@@ -309,7 +309,7 @@ int gbv_view(const Library *lib, const char *docname) {
     }
 
     if (idx < 0) {
-        print ("Documento '%s' não encontrado.\n", docname);
+        printf("Documento '%s' não encontrado.\n", docname);
         return -1;
     }
 
@@ -335,7 +335,7 @@ int gbv_view(const Library *lib, const char *docname) {
         size_t n = fread(buffer1, 1, para_ler, f);
         if (n == 0) break;
 
-        print ('\n--- Bloco %ld/%ld ---\n', atual + 1, total_blocos);
+        printf('\n--- Bloco %ld/%ld ---\n', atual + 1, total_blocos);
         fwrite(buffer1, 1, n, stdout);
         printf("\n");
 
