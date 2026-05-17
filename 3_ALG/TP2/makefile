@@ -1,6 +1,6 @@
 CC = gcc-14
 CFLAGS = -Wall -Wextra -Werror -g -std=c23
-MAIN = prova1_20240487
+MAIN = prova2_20240487
 OBJ = main.o arvoreB.o auxiliar.o
 HDR = arvoreB.h auxiliar.h
  

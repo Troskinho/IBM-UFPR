@@ -43,11 +43,12 @@ void imprimirArvoreB(struct arvoreB* arvore){
 
     if (arvore->raiz == NULL) return;
 
-    int32_t max_fila = 100; //numero exemplo
-    struct item_fila* fila = (struct item_fila*) malloc(max_fila * sizeof(struct item_fila));
+    int32_t capacidade = 64;
+    int32_t fim = 0, inicio = 0;
+
+    struct item_fila* fila = malloc(capacidade * sizeof(struct item_fila));
     verifica_alocacao(fila);
-    
-    int32_t inicio = 0, fim = 0;
+
     int32_t nivel_atual = -1;
 
     fila[fim].n = arvore->raiz;
@@ -56,11 +57,19 @@ void imprimirArvoreB(struct arvoreB* arvore){
 
     while (inicio < fim) {
 
+        //se a fila estiver quase cheia, dobra a capacidade
+        //isso deve impedir o erro que ocorreu no trabalho 1 
+        if (fim >= capacidade -1) {
+            capacidade *= 2;
+            struct item_fila* nova_fila = realloc(fila, capacidade *sizeof(struct item_fila));
+            verifica_alocacao(nova_fila);
+            fila = nova_fila;
+        }
+
         struct nodo* nodo_atual = fila[inicio].n;
         int32_t nivel_nodo = fila[inicio].nivel;
         inicio++;
 
-        //so pra seguir a formatacao solicitada no trabalho
         if (nivel_nodo > nivel_atual) {
             if (nivel_atual != -1) printf("\n");
             printf("----//----\n");
@@ -74,7 +83,7 @@ void imprimirArvoreB(struct arvoreB* arvore){
         printf("%c (n:%d) [", nodo_atual->eh_folha ? 'F' : 'I', nodo_atual->n);
         for (int32_t i = 0; i < nodo_atual->n; i++) {
             printf("%d", nodo_atual->chave[i]);
-            if (i < nodo_atual->n - 1) printf(" ");
+            if (i <nodo_atual->n - 1) printf("  ");
         }
         printf("]");
 
@@ -88,12 +97,15 @@ void imprimirArvoreB(struct arvoreB* arvore){
             }
         }
     }
+
     printf("\n");
     free(fila);
 }
 
 void imprimirEmOrdem(struct arvoreB* arvore) {
-    imprimir_nodo_ordem(arvore->raiz);
+    printf("Em ordem: ");
+    bool primeiro = true;
+    imprimir_nodo_ordem(arvore->raiz, &primeiro);
     printf("\n");
 }
 
@@ -132,4 +144,10 @@ void deletarArvore(struct arvoreB* arvore) {
 
     deletar_nodo(arvore->raiz);
     free(arvore);
+}
+
+bool removerChaveArvoreB(struct arvoreB* arvore, int32_t chave) {
+
+    //eh possivel seguir a  implementacao de cormen et al e dos slides da aula
+    
 }

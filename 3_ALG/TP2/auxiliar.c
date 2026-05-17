@@ -100,20 +100,22 @@ void inserir_nao_cheio(struct nodo* nodo, int32_t chave, int32_t t) {
     }
 }
 
-void imprimir_nodo_ordem(struct nodo* nodo) {
+void imprimir_nodo_ordem(struct nodo* nodo, bool* primeiro) {
 
     if (nodo == NULL) return;
 
     //ideia de imprimir de maneira recursiva
     for (int32_t i = 0; i < nodo->n; i++) {
         if (!nodo->eh_folha) {
-            imprimir_nodo_ordem(nodo->filhos[i]);
+            imprimir_nodo_ordem(nodo->filhos[i], primeiro);
         }
-        printf("%d ", nodo->chave[i]);
+        if (!*primeiro) printf("  ");
+        printf("%d", nodo->chave[i]);
+        *primeiro = false;    
     }
 
     if (!nodo->eh_folha) {
-        imprimir_nodo_ordem(nodo->filhos[nodo->n]);
+        imprimir_nodo_ordem(nodo->filhos[nodo->n], primeiro);
     }
 }
 

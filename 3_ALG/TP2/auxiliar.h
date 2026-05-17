@@ -22,7 +22,7 @@ void dividir_filho(struct nodo* nodo_pai, int32_t i, struct nodo* nodo_filho, in
 void inserir_nao_cheio(struct nodo* nodo, int32_t chave, int32_t t);
 
 //funcao para imprimir nodo em ordem
-void imprimir_nodo_ordem(struct nodo* nodo);
+void imprimir_nodo_ordem(struct nodo* nodo, bool* primeiro);
 
 //funcao para liberaar memoria dos nodos antes de liberar a memoria da arvore
 //nao tenho certeza se essa implementacao eh a mais recomendada mas pensei na modularizacao do codigo
