@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "auxiliares.h"
+#include "auxiliar.h"
 #include "arvoreB.h"
 
 //implementacao de funcoes auxiliares que foram necessarias 

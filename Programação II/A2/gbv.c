@@ -19,7 +19,7 @@ typedef struct {
  
 //le o superbloco do inicio do arquivo
 static int ler_superbloco(FILE *file, superbloco *sb) {
-    rewind(file);
+    if (fseek(file, 4, SEEK_SET) != 0) return -1;
     if (fread(sb, sizeof(superbloco), 1, file) != 1) {
         return -1; //erro ao ler o superbloco
     }
@@ -28,7 +28,7 @@ static int ler_superbloco(FILE *file, superbloco *sb) {
  
 //grava o superbloco no inicio do arquivo
 static int escrever_superbloco(FILE *file, const superbloco *sb) {
-    rewind(file);
+    if (fseek(file, 4, SEEK_SET) != 0) return -1;
     if (fwrite(sb, sizeof(superbloco), 1, file) != 1) {
         return -1;//erro ao escrever o superbloco
     }
@@ -57,7 +57,7 @@ static int salvar_biblioteca(FILE *file, Library *lib, long offset_diretorio) {
     return 0;
 }
  
-int gbv_create(const char *filename) {
+int gbv_create(const char *filename, const char *chave) {
     FILE *file = fopen(filename, "wb");
     if (!file) return -1;
  
@@ -74,7 +74,7 @@ int gbv_create(const char *filename) {
     return 0;   
 }
  
-int gbv_open(Library *lib, const char *filename) {
+int gbv_open(Library *lib, const char *filename, const char *chave) {
     lib->docs = NULL;
     lib->count = 0;
  
@@ -83,7 +83,7 @@ int gbv_open(Library *lib, const char *filename) {
  
     FILE *file = fopen(filename, "rb");
     if (!file) {    
-        return gbv_create(filename); //cria nova biblioteca se o arquivo nao existir
+        return gbv_create(filename, chave); //cria nova biblioteca se o arquivo nao existir
     }
  
     superbloco sb;
