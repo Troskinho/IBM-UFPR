@@ -168,6 +168,9 @@ void mesclar_filhos(struct nodo* nodo_pai, int32_t i, int32_t t) {
 
     esquerdo->n = 2 * t - 1;
 
+    for (int32_t j = i; j < nodo_pai->n - 1; j++) {
+        nodo_pai->chave[j] = nodo_pai->chave[j + 1];
+    }
     //remove a chave separadora do pai
     for (int32_t j = i + 1; j < nodo_pai->n; j++) {
         nodo_pai->filhos[j] = nodo_pai->filhos[j + 1];
@@ -280,14 +283,14 @@ void remover_nodo(struct nodo* nodo, int32_t chave, int32_t t) {
                 //merge usando o irmao esquerdo se existir
                 if (i > 0) {
                     mesclar_filhos(nodo, i - 1, t);
-                    filho = nodo->filhos[i - 1]; // filho esta mesclado
+                    i = i - 1;
                 } else {
                     mesclar_filhos(nodo, i, t);
                     //filho jah eh nodo->filhos[i] apos o merge
                 }
             }
-        }
-
-        remover_nodo(nodo->filhos[i > nodo->n ? nodo->n : i], chave, t);
+        } 
+        if (i > nodo->n) i = nodo->n;
+        remover_nodo(nodo->filhos[i], chave, t);
     }
 }
