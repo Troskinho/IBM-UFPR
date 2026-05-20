@@ -28,6 +28,17 @@ void imprimir_nodo_ordem(struct nodo* nodo, bool* primeiro);
 //nao tenho certeza se essa implementacao eh a mais recomendada mas pensei na modularizacao do codigo
 void deletar_nodo(struct nodo* nodo);
 
+//função que calcula o nodo predecessor ao nodo atual
+int32_t predecessor(struct nodo* nodo);
+
+//funcao que calcula o nodo sucessor ao nodo atual
+int32_t sucessor(struct nodo* nodo);
+
+//funcao para mesclar o nodo filho i com o filho i+1 do nodo pai, apos a mesclagem o nodo filho i+1 eh liberado
+void mesclar_filhos(struct nodo* nodo_pai, int32_t i, int32_t t);
+
+//funcao para remover a chave chve do nodo
+void remover_nodo(struct nodo* nodo, int32_t chave, int32_t t);
 
 
 #endif

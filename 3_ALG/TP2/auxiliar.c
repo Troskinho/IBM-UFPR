@@ -132,3 +132,162 @@ void deletar_nodo(struct nodo* nodo) {
     free(nodo->filhos);
     free(nodo);
 }
+
+//retorna a maior chave da subarvore, o predecessor do nodo atual
+int32_t predecessor(struct nodo* nodo) {
+    while (!nodo->eh_folha)
+        nodo = nodo->filhos[nodo->n];
+    return nodo->chave[nodo->n - 1];
+}
+
+//retirna a menor chave da subarvore, o sucessor do nodo atual
+int32_t sucessor(struct nodo* nodo) {
+    while (!nodo->eh_folha)
+        nodo = nodo->filhos[0];
+    return nodo->chave[0];
+}
+
+void mesclar_filhos(struct nodo* nodo_pai, int32_t i, int32_t t) {
+    
+    struct nodo* esquerdo = nodo_pai->filhos[i];
+    struct nodo* direito = nodo_pai->filhos[i + 1];
+
+    //chave separadora do pai no filho esdquerdo
+    esquerdo->chave[t -1] = nodo_pai->chave[i];
+
+    //copia a chave do filho direito para o esquerdo
+    for (int32_t j = 0; j < direito->n; j++) {
+        esquerdo->chave[j + t] = direito->chave[j];
+    }
+
+    //copia os filgos do direito para o esquerdo caso não seja folha
+    if (!esquerdo->eh_folha) {
+        for (int32_t j = 0; j <= direito->n; j++)
+            esquerdo->filhos[t + j] = direito->filhos[j];
+    }
+
+    esquerdo->n = 2 * t - 1;
+
+    //remove a chave separadora do pai
+    for (int32_t j = i + 1; j < nodo_pai->n; j++) {
+        nodo_pai->filhos[j] = nodo_pai->filhos[j + 1];
+    }
+
+    nodo_pai->filhos[nodo_pai->n] = NULL;
+    nodo_pai->n--;
+
+    free(direito->chave);
+    free(direito->filhos);
+    free(direito);
+}
+
+void remover_nodo(struct nodo* nodo, int32_t chave, int32_t t) {
+
+    int32_t i = 0;
+
+    //encontra a posicao da chave ou do nodo filho para descer
+    while(i < nodo->n && chave > nodo->chave[i])
+        i++;
+    
+    //caso da chave encontrada no nodo atual
+    if (i < nodo->n && nodo->chave[i] == chave) {
+
+        if (nodo->eh_folha) {
+            //eh folha? sim = apenas remove
+            for (int32_t j = i; j < nodo->n - 1; j++)
+                nodo->chave[j] = nodo->chave[j + 1];
+            nodo->n--;
+        } else {
+            struct nodo* filho_esquerdo = nodo->filhos[i];
+            struct nodo* filho_direito = nodo->filhos[i + 1];
+
+            if (filho_esquerdo->n >= t) {
+                //caso do predecessor
+                int32_t pred = predecessor(filho_esquerdo);
+                nodo->chave[i] = pred;
+                remover_nodo(filho_esquerdo, pred, t);
+            } else if (filho_direito->n >= t) {
+                //caso do sucessor
+                int32_t suces = sucessor(filho_direito);
+                nodo->chave[i] = suces;
+                remover_nodo(filho_direito, suces, t);
+            } else {
+                //caso de mesclar os filhos
+                mesclar_filhos(nodo, i , t);
+                remover_nodo(nodo->filhos[i], chave, t);
+            }
+        } 
+    } else {
+        //chave n esta no nodo atual e precisa descer na arvore
+
+        if (nodo->eh_folha)
+            return;
+        
+        struct nodo* filho = nodo->filhos[i];
+
+        if (filho->n < t) {
+
+            if (i > 0 && nodo->filhos[i - 1]->n >= t) {
+                //rotacao a partir do filho esquerdo
+                struct nodo* irmao = nodo->filhos[i - 1];
+
+                //desloca chaves do filho para a direita
+                for (int32_t j = filho->n; j > 0; j--)
+                    filho->chave[j] = filho->chave[j - 1];
+                //desloca filhos do filho para a direita
+                if (!filho->eh_folha)
+                    for(int32_t j = filho->n + 1; j > 0; j--)
+                        filho->filhos[j] = filho->filhos[j - 1];
+                
+                //desce a chave do pai para o filho
+                filho->chave[0] = nodo->chave[i - 1];
+                //sobe a ultima chave do irmao para o pai
+                nodo->chave[i - 1] = irmao->chave[irmao->n - 1];
+
+                //move o ultimo dilgo do irmao para o filho
+                if (!irmao->eh_folha) {
+                    filho->filhos[0] = irmao->filhos[irmao->n];
+                    irmao->filhos[irmao->n] = NULL;
+                }
+
+                filho->n++;
+                irmao->n--;
+            } else if (i < nodo->n && nodo->filhos[i + 1]->n >= t) {
+                //rotacao a partir do filho direito
+                struct nodo* irmao = nodo->filhos[i + 1];
+
+                //desce a chave do pai para o filho
+                filho->chave[filho->n] = nodo->chave[i];
+                //sobe a primeira chave do irmao para o pai
+                nodo->chave[i] = irmao->chave[0];
+
+                //move o primeiro filho do irmao para o filho
+                if (!irmao->eh_folha) {
+                    filho->filhos[filho->n + 1] = irmao->filhos[0];
+                    //desloca filhos do itmao para a esquerda
+                    for (int32_t j = 0; j < irmao->n; j++)
+                        irmao->filhos[j] = irmao->filhos[j + 1];
+                    irmao->filhos[irmao->n] = NULL;
+                }
+
+                //desloca as chves do irmao para a esquerda
+                for (int32_t j = 0; j < irmao->n - 1; j++)
+                    irmao->chave[j] = irmao->chave[j + 1];
+
+                filho->n++;
+                irmao->n--; 
+            } else {
+                //merge usando o irmao esquerdo se existir
+                if (i > 0) {
+                    mesclar_filhos(nodo, i - 1, t);
+                    filho = nodo->filhos[i - 1]; // filho esta mesclado
+                } else {
+                    mesclar_filhos(nodo, i, t);
+                    //filho jah eh nodo->filhos[i] apos o merge
+                }
+            }
+        }
+
+        remover_nodo(nodo->filhos[i > nodo->n ? nodo->n : i], chave, t);
+    }
+}

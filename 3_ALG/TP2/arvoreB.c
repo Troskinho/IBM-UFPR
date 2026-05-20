@@ -148,6 +148,28 @@ void deletarArvore(struct arvoreB* arvore) {
 
 bool removerChaveArvoreB(struct arvoreB* arvore, int32_t chave) {
 
-    //eh possivel seguir a  implementacao de cormen et al e dos slides da aula
-    
+    if (arvore == NULL || arvore->raiz == NULL) return false;
+
+    //verifica se a chave existe antes de tentar remoover
+    int32_t idx = -1;
+    if (buscarArvoreB(arvore, chave, &idx) == NULL) {
+        return false;
+    }
+    remover_nodo(arvore->raiz, chave, arvore->t_arvore);
+
+    //se a raiz ficar vazia apos um merge, o filho mesclado vira a nova raiz
+    if (arvore->raiz->n == 0) {
+        struct nodo* raiz_velha = arvore->raiz;
+        if (!arvore->raiz->eh_folha)
+            arvore->raiz = arvore->raiz->filhos[0];
+        else
+            arvore->raiz = criar_nodo(arvore->t_arvore, true);
+
+        raiz_velha->filhos[0] = NULL;
+        free(raiz_velha->chave);
+        free(raiz_velha->filhos);
+        free(raiz_velha);
+    }
+
+    return true;
 }
