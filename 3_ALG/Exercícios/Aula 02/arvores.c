@@ -32,7 +32,7 @@ int calcular_altura(nodo* raiz) {
 //visita a arvore em pre ordem
 void pre_ordem(nodo* raiz) {
 
-    if (nodo != NULL) {
+    if (raiz != NULL) {
         printf("%d ", raiz->chave);
         pre_ordem(raiz->fe);
         pre_ordem(raiz->fd);
@@ -42,7 +42,7 @@ void pre_ordem(nodo* raiz) {
 //visita a arvore em ordem
 void em_ordem(nodo* raiz) {
 
-    if (nodo != NULL) {
+    if (raiz != NULL) {
         em_ordem(raiz->fe);
         printf("%d ", raiz->chave);
         em_ordem(raiz->fd);
@@ -52,7 +52,7 @@ void em_ordem(nodo* raiz) {
 //visita a arvore em pos ordem
 void pos_ordem(nodo* raiz) {
 
-    if (nodo != NULL) {
+    if (raiz != NULL) {
         pos_ordem(raiz->fe);
         pos_ordem(raiz->fd);
         printf("%d ", raiz->chave);
