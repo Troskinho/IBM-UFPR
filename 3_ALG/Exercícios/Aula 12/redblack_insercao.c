@@ -42,6 +42,57 @@ arvore* criar_arvore(void) {
     return T;
 }
 
+void rotacao_direita(arvore* T, nodo* y) {
+    //x eh o filho esquerdo, que sobe e toma o lugar de y
+    nodo* x = y->fe;
+    //o filho direito de x passa a ser filho esquerdo de y
+    y->fe = x->fd;
+    //se a subarvore nao for vazia (sentinela), atualizamos o seu pai
+    if (x->fd != T->sentinela) {
+        x->fd->pai = y;
+    }
+    //x sobe e assume o lugar do antigo pai de y
+    x->pai = y->pai;
+    //reconectamos o restante da arvore com x
+    if (y->pai == T->sentinela) {
+        //se y era raiz, agora x eh raiz
+        T->raiz = x;
+    }
+    else if (y == y->pai->fd) {
+        //se y era filho da direita, x entra na direita
+        y->pai->fd = x;
+    }
+    else {
+        //se y era filho da esquerda, x entra na esquerda
+        y->pai->fe = x;
+    }
+    //y desce e vira filho direito de x
+    x->fd = y;
+    y->pai = x;         //x como pai de y
+}
+ 
+void rotacao_esquerda(arvore* T, nodo* y) {
+    nodo* x = y->fd;
+    y->fd = x->fe;
+ 
+    if (x->fe != T->sentinela) {
+        x->fe->pai = y;
+    }
+    x->pai = y->pai;
+ 
+    if (y->pai == T->sentinela) {
+        T->raiz = x;
+    }
+    else if (y == y->pai->fe) {
+        y->pai->fe = x;
+    }
+    else {
+        y->pai->fd = x;
+    }
+    x->fe = y;
+    y->pai = x;
+}
+ 
 void redblack_fixup(arvore* T, nodo* z) {
     //o loop continua enquanto houver violacao de cor
     while (z->pai->cor == VERMELHO) {
@@ -95,57 +146,6 @@ void redblack_fixup(arvore* T, nodo* z) {
     T->raiz->cor = PRETO;
 }
 
-void rotacao_direita(arvore* T, nodo* y) {
-    //x eh o filho esquerdo, que sobe e toma o lugar de y
-    nodo* x = y->fe;
-    //o filho direito de x passa a ser filho esquerdo de y
-    y->fe = x->fd;
-    //se a subarvore nao for vazia (sentinela), atualizamos o seu pai
-    if (x->fd != T->sentinela) {
-        x->fd->pai = y;
-    }
-    //x sobe e assume o lugar do antigo pai de y
-    x->pai = y->pai;
-    //reconectamos o restante da arvore com x
-    if (y->pai == T->sentinela) {
-        //se y era raiz, agora x eh raiz
-        T->raiz = x;
-    }
-    else if (y == y->pai->fd) {
-        //se y era filho da direita, x entra na direita
-        y->pai->fd = x;
-    }
-    else {
-        //se y era filho da esquerda, x entra na esquerda
-        y->pai->fe = x;
-    }
-    //y desce e vira filho direito de x
-    x->fd = y;
-    y->pai = x;         //x como pai de y
-}
- 
-void rotacao_esquerda(arvore* T, nodo* y) {
-    nodo* x = y->fd;
-    y->fd = x->fe;
- 
-    if (x->fe != T->sentinela) {
-        x->fe->pai = y;
-    }
-    x->pai = y->pai;
- 
-    if (y->pai == T->sentinela) {
-        T->raiz = x;
-    }
-    else if (y == y->pai->fe) {
-        y->pai->fe = x;
-    }
-    else {
-        y->pai->fd = x;
-    }
-    x->fe = y;
-    y->pai = x;
-}
- 
 void insercao_redblack(arvore* T, int c) {
     //cria o novo nodo, que nasce vermelho
     nodo* z = criar_nodo(c, VERMELHO);
