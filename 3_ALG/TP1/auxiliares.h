@@ -28,6 +28,4 @@ void imprimir_nodo_ordem(struct nodo* nodo);
 //nao tenho certeza se essa implementacao eh mais recomendada mas pensei na modularizacao do codigo
 void deletar_nodo(struct nodo* nodo);
 
-
-
 #endif
