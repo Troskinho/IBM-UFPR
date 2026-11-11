@@ -1,5 +1,6 @@
 public class Principal {
     public static void main(String[] args) {
+        
         Funcionario[] vetObjetos = new Funcionario[2];
         vetObjetos[0] = new Funcionario();
         vetObjetos[1] = new Funcionario();

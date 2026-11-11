@@ -12,5 +12,6 @@ public class Vetor {
             soma = soma + valores[i];
         }
         System.out.println("Soma: " + soma);
+        source.close();
     }
 }
